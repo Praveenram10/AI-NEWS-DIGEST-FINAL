@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AI & SAP Newsletter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #202124;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-card h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .login-card p {
+            color: #5f6368;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #5f6368;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card .label {
+            color: #5f6368;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f5f5f5;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            color: #5f6368;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .btn-small {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-small:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-small.danger {
+            background: #fee;
+            color: #c33;
+            border-color: #fcc;
+        }
+
+        .btn-small.danger:hover {
+            background: #fdd;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-badge.inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .newsletter-editor {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-item {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .article-item strong {
+            color: #667eea;
+        }
+
+        .article-item p {
+            font-size: 13px;
+            color: #5f6368;
+            margin: 8px 0 0 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .error-msg {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-msg {
+            background: #efe;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Modal Styles */
+        .test-email-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .test-email-modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-box h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+
+        .modal-box .form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .modal-box input,
+        .modal-box select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .modal-box input:focus,
+        .modal-box select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .test-status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .test-status.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            display: block;
+        }
+
+        .test-status.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+            display: block;
+        }
+
+        .test-status.loading {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #bbdefb;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            td, th {
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <h1>🔐 Admin Panel</h1>
+            <p>AI & SAP Newsletter Management</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login">Login</button>
+                <p style="text-align: center; margin-top: 20px; font-size: 12px;">
+                    Demo: username: <strong>admin</strong> | password: <strong>admin123</strong>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <div class="header">
+            <h1>📊 Newsletter Admin Dashboard</h1>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="content">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="overview">Overview</button>
+                <button class="nav-tab" data-tab="subscribers">Subscribers</button>
+                <button class="nav-tab" data-tab="newsletter">Newsletter</button>
+                <button class="nav-tab" data-tab="delivery">Delivery Stats</button>
+                <button class="nav-tab" data-tab="brevo-test">🧪 Brevo Test</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2 style="margin-bottom: 20px;">📈 Dashboard Overview</h2>
+                
+                <div class="stats-grid" id="overviewStats">
+                    <div class="stat-card">
+                        <div class="label">Total Subscribers</div>
+                        <div class="value" id="totalSubscribers">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Active Subscribers</div>
+                        <div class="value" id="activeSubscribers">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Inactive Subscribers</div>
+                        <div class="value" id="inactiveSubscribers">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Total Emails Sent</div>
+                        <div class="value" id="totalEmailsSent">-</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">📊 Topic Preferences</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">AI Only</div>
+                        <div class="value" id="aiOnlyCount">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">SAP + AI</div>
+                        <div class="value" id="sapAiCount">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Both Topics</div>
+                        <div class="value" id="bothCount">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscribers Tab -->
+            <div id="subscribers" class="tab-content">
+                <h2 style="margin-bottom: 20px;">👥 Manage Subscribers</h2>
+                
+                <div class="success-msg" id="successMsg"></div>
+                <div class="error-msg" id="errorMsg"></div>
+
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Topics</th>
+                                <th>Status</th>
+                                <th>Subscribed Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subscribersTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" id="subscribersPagination"></div>
+            </div>
+
+            <!-- Newsletter Tab -->
+            <div id="newsletter" class="tab-content">
+                <h2 style="margin-bottom: 20px;">📰 Today's Newsletter</h2>
+                
+                <div class="newsletter-editor">
+                    <div id="newsletterContent" style="margin-bottom: 20px;">
+                        <p>Loading today's newsletter...</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-primary" onclick="openTestEmailModal()">📧 Send Test Email</button>
+                        <button class="btn-primary" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="sendFullNewsletterTest()">🧪 Test Full Newsletter</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Stats Tab -->
+            <div id="delivery" class="tab-content">
+                <h2 style="margin-bottom: 20px;">📬 Delivery Statistics</h2>
+                
+                <div class="stats-grid" id="deliveryStats">
+                    <div class="stat-card">
+                        <div class="label">Newsletters Sent</div>
+                        <div class="value" id="newslettersSent">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Successful Emails</div>
+                        <div class="value" id="successfulEmails">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Failed Emails</div>
+                        <div class="value" id="failedEmails">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Bounced Emails</div>
+                        <div class="value" id="bouncedEmails">-</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">📊 Recent Newsletters</h3>
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Sent</th>
+                                <th>Successful</th>
+                                <th>Failed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentNewslettersTable">
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 40px;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Brevo API Test Tab -->
+            <div id="brevo-test" class="tab-content">
+                <h2 style="margin-bottom: 20px;">🧪 Brevo API Test & Debugging</h2>
+                
+                <div style="background: #f0f4ff; border-left: 4px solid #667eea; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+                    <strong>🔍 Debug Brevo Email Integration</strong>
+                    <p style="margin-top: 10px; color: #555; font-size: 14px;">
+                        Use this tool to diagnose Brevo API issues and verify email sending configuration.
+                    </p>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px;">📧 Send Test Email via Brevo API</h3>
+                    
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="brevoTestEmail">Email Address *</label>
+                        <input type="email" id="brevoTestEmail" placeholder="your-email@example.com" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px;">
+                    </div>
+
+                    <button onclick="testBrevoAPI()" class="btn-send" style="padding: 10px 20px; margin-right: 10px;">Test Brevo Connection</button>
+                    <button onclick="testBrevoEmail()" class="btn-send" style="padding: 10px 20px;">Send Welcome Email</button>
+
+                    <div id="brevoTestResult" style="margin-top: 20px; display: none; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto;"></div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0;">
+                    <h3 style="margin-bottom: 15px;">📋 Configuration Check</h3>
+                    
+                    <div id="brevoConfigCheck" style="font-size: 14px; line-height: 1.8;">
+                        <div style="padding: 10px; border-bottom: 1px solid #e0e0e0;">
+                            <strong>API Key:</strong> <span id="configApiKey" style="color: #999;">Checking...</span>
+                        </div>
+                        <div style="padding: 10px; border-bottom: 1px solid #e0e0e0;">
+                            <strong>Sender Email:</strong> <span id="configSenderEmail" style="color: #999;">Checking...</span>
+                        </div>
+                        <div style="padding: 10px;">
+                            <strong>Sender Name:</strong> <span id="configSenderName" style="color: #999;">Checking...</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107; display: none;" id="brevoConfigWarning">
+                        <strong>⚠️ Important:</strong> Your sender email must be verified in Brevo before emails can be sent. 
+                        <a href="https://app.brevo.com/settings/account/senders" target="_blank">Verify Sender Email →</a>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">📧 Send Manual Newsletter</h3>
+                    
+                    <div style="background: #f0f4ff; border-left: 4px solid #667eea; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                        <strong>📤 Send Newsletter to Specific Emails</strong>
+                        <p style="margin: 10px 0 0 0; color: #555; font-size: 14px;">
+                            Send today's newsletter immediately to selected subscribers or custom emails.
+                        </p>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Select Recipients *</label>
+                        <select id="manualSendMode" onchange="toggleManualSendMode()" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; margin-bottom: 10px;">
+                            <option value="">-- Choose Option --</option>
+                            <option value="all">Send to All Subscribers</option>
+                            <option value="select">Select Specific Subscribers</option>
+                            <option value="custom">Enter Custom Emails</option>
+                        </select>
+                    </div>
+
+                    <div id="selectMode" style="display: none;">
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Choose Subscribers (Hold Ctrl to select multiple)</label>
+                            <select id="subscribersList" multiple style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; min-height: 150px;">
+                                <option value="">Loading subscribers...</option>
+                            </select>
+                            <small style="color: #999;">Showing active subscribers</small>
+                        </div>
+                    </div>
+
+                    <div id="customMode" style="display: none;">
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label for="customEmails">Enter Email Addresses (one per line) *</label>
+                            <textarea id="customEmails" placeholder="email1@example.com&#10;email2@example.com&#10;email3@example.com" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; font-family: monospace; min-height: 100px;"></textarea>
+                        </div>
+                    </div>
+
+                    <button onclick="sendManualNewsletter()" class="btn-send" style="padding: 10px 20px;">Send Newsletter Now</button>
+
+                    <div id="manualSendResult" style="margin-top: 20px; display: none; padding: 15px; border-radius: 6px; font-size: 14px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Email Modal -->
+    <div id="testEmailModal" class="test-email-modal">
+        <div class="modal-box">
+            <h3>📧 Send Test Email</h3>
+            <form id="testEmailForm">
+                <div class="form-group">
+                    <label for="testEmail">Email Address *</label>
+                    <input type="email" id="testEmail" name="testEmail" placeholder="test@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="testType">Test Type *</label>
+                    <select id="testType" name="testType" required>
+                        <option value="simple">Simple Test Email</option>
+                        <option value="full-newsletter">Full Newsletter Test</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="font-size: 12px; color: #666; margin-bottom: 0;">
+                    <strong>ℹ️ Test Types:</strong><br>
+                    • <strong>Simple:</strong> Brevo integration verification<br>
+                    • <strong>Full:</strong> Complete newsletter with today's content
+                </div>
+
+                <div class="test-status" id="testStatus"></div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-send">Send Test Email</button>
+                    <button type="button" class="btn-cancel" onclick="closeTestEmailModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // Tab navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                
+                this.classList.add('active');
+                const tabName = this.getAttribute('data-tab');
+                document.getElementById(tabName).classList.add('active');
+
+                if (tabName === 'overview') loadOverviewData();
+                if (tabName === 'subscribers') loadSubscribers();
+                if (tabName === 'newsletter') loadNewsletter();
+                if (tabName === 'delivery') loadDeliveryStats();
+            });
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('adminToken', data.token);
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    loadOverviewData();
+                } else {
+                    alert(data.error || 'Login failed');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('adminToken');
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginForm').reset();
+        }
+
+        // Load Overview Data
+        async function loadOverviewData() {
+            try {
+                const response = await fetch('/api/subscribers/stats/summary');
+                const stats = await response.json();
+
+                document.getElementById('totalSubscribers').textContent = stats.total || '0';
+                document.getElementById('activeSubscribers').textContent = stats.active || '0';
+                document.getElementById('inactiveSubscribers').textContent = stats.inactive || '0';
+                document.getElementById('aiOnlyCount').textContent = stats.ai_only || '0';
+                document.getElementById('sapAiCount').textContent = stats.sap_ai || '0';
+                document.getElementById('bothCount').textContent = stats.both || '0';
+            } catch (error) {
+                console.error('Error loading overview:', error);
+            }
+        }
+
+        // Load Subscribers
+        async function loadSubscribers(page = 1) {
+            try {
+                const response = await fetch(`/api/admin/subscribers?page=${page}&limit=${itemsPerPage}`);
+                const data = await response.json();
+
+                let html = '';
+                data.subscribers.forEach(sub => {
+                    html += `
+                        <tr>
+                            <td>${sub.email}</td>
+                            <td>${sub.name}</td>
+                            <td>${sub.topic_preference.toUpperCase()}</td>
+                            <td><span class="status-badge ${sub.is_active ? 'active' : 'inactive'}">${sub.is_active ? 'ACTIVE' : 'INACTIVE'}</span></td>
+                            <td>${new Date(sub.subscribed_at).toLocaleDateString()}</td>
+                            <td><button class="btn-small danger" onclick="deleteSubscriber(${sub.id})">Delete</button></td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('subscribersTable').innerHTML = html;
+
+                // Pagination
+                let paginationHtml = '';
+                for (let i = 1; i <= data.pagination.pages; i++) {
+                    paginationHtml += `
+                        <button ${i === page ? 'class="active"' : ''} onclick="loadSubscribers(${i})">
+                            ${i}
+                        </button>
+                    `;
+                }
+                document.getElementById('subscribersPagination').innerHTML = paginationHtml;
+            } catch (error) {
+                console.error('Error loading subscribers:', error);
+            }
+        }
+
+        async function deleteSubscriber(id) {
+            if (!confirm('Are you sure you want to delete this subscriber?')) return;
+
+            try {
+                const response = await fetch(`/api/admin/subscribers/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    showMessage('Subscriber deleted successfully', 'success');
+                    loadSubscribers(currentPage);
+                } else {
+                    showMessage('Failed to delete subscriber', 'error');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Load Newsletter
+        async function loadNewsletter() {
+            try {
+                const response = await fetch('/api/admin/newsletter/today');
+                if (response.ok) {
+                    const newsletter = await response.json();
+                    let html = '<h3>📰 Today\'s Newsletter Content</h3>';
+                    
+                    html += '<h4 style="margin-top: 20px; margin-bottom: 10px;">🤖 AI News Articles:</h4>';
+                    newsletter.ai_articles.forEach((article, idx) => {
+                        html += `
+                            <div class="article-item">
+                                <strong>${idx + 1}. ${article.title}</strong>
+                                <p>Source: ${article.source} | Date: ${article.date}</p>
+                                <p>${article.summary}</p>
+                                <p><a href="${article.url}" target="_blank" style="color: #667eea;">Read more →</a></p>
+                            </div>
+                        `;
+                    });
+
+                    html += '<h4 style="margin-top: 20px; margin-bottom: 10px;">💼 SAP + AI Articles:</h4>';
+                    newsletter.sap_ai_articles.forEach((article, idx) => {
+                        html += `
+                            <div class="article-item">
+                                <strong>${idx + 1}. ${article.title}</strong>
+                                <p>Source: ${article.source} | Date: ${article.date}</p>
+                                <p>${article.summary}</p>
+                                <p><a href="${article.url}" target="_blank" style="color: #667eea;">Read more →</a></p>
+                            </div>
+                        `;
+                    });
+
+                    html += '<h4 style="margin-top: 20px; margin-bottom: 10px;">✨ Inspirational Quote:</h4>';
+                    html += `<div class="article-item">${newsletter.inspirational_quote}</div>`;
+
+                    document.getElementById('newsletterContent').innerHTML = html;
+                } else {
+                    document.getElementById('newsletterContent').innerHTML = 
+                        '<p>No newsletter for today yet. News fetching happens daily at 3 AM.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading newsletter:', error);
+                document.getElementById('newsletterContent').innerHTML = '<p>Error loading newsletter</p>';
+            }
+        }
+
+        // Load Delivery Stats
+        async function loadDeliveryStats() {
+            try {
+                const response = await fetch('/api/admin/delivery-stats');
+                const data = await response.json();
+                const stats = data.overall;
+
+                document.getElementById('newslettersSent').textContent = stats.total_newsletters_sent || '0';
+                document.getElementById('successfulEmails').textContent = stats.successful || '0';
+                document.getElementById('failedEmails').textContent = stats.failed || '0';
+                document.getElementById('bouncedEmails').textContent = stats.bounced || '0';
+
+                let html = '';
+                data.recent.forEach(nl => {
+                    html += `
+                        <tr>
+                            <td>${nl.date}</td>
+                            <td>${nl.sent_at ? '✅ Yes' : '⏳ Pending'}</td>
+                            <td>${nl.sent_count || '0'}</td>
+                            <td>${nl.failed_count || '0'}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('recentNewslettersTable').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading delivery stats:', error);
+            }
+        }
+
+        function sendTestEmail() {
+            alert('Test email feature coming soon!');
+        }
+
+        function showMessage(message, type) {
+            const msgDiv = document.getElementById(type === 'success' ? 'successMsg' : 'errorMsg');
+            msgDiv.textContent = message;
+            msgDiv.style.display = 'block';
+            setTimeout(() => msgDiv.style.display = 'none', 3000);
+        }
+
+        // Test Email Functions
+        function openTestEmailModal() {
+            document.getElementById('testEmailModal').classList.add('show');
+            document.getElementById('testEmailForm').reset();
+            document.getElementById('testStatus').textContent = '';
+            document.getElementById('testStatus').className = 'test-status';
+        }
+
+        function closeTestEmailModal() {
+            document.getElementById('testEmailModal').classList.remove('show');
+            document.getElementById('testEmailForm').reset();
+            document.getElementById('testStatus').textContent = '';
+        }
+
+        // Handle test email form submission
+        document.getElementById('testEmailForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('testEmail').value;
+            const testType = document.getElementById('testType').value;
+            const statusDiv = document.getElementById('testStatus');
+
+            statusDiv.className = 'test-status loading';
+            statusDiv.textContent = '⏳ Sending test email...';
+
+            try {
+                const response = await fetch('/api/admin/send-test-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, testType })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusDiv.className = 'test-status success';
+                    statusDiv.innerHTML = `
+                        <strong>✅ Success!</strong><br>
+                        Test email sent to ${email}<br>
+                        Message ID: ${data.messageId}<br>
+                        Time: ${new Date().toLocaleTimeString()}
+                    `;
+                    setTimeout(() => closeTestEmailModal(), 2000);
+                } else {
+                    statusDiv.className = 'test-status error';
+                    statusDiv.innerHTML = `
+                        <strong>❌ Failed</strong><br>
+                        ${data.error || 'Unknown error'}
+                    `;
+                }
+            } catch (error) {
+                statusDiv.className = 'test-status error';
+                statusDiv.innerHTML = `
+                    <strong>❌ Error</strong><br>
+                    ${error.message}
+                `;
+            }
+        });
+
+        async function sendFullNewsletterTest() {
+            const email = prompt('Enter your email to receive the full newsletter test:');
+            if (!email) return;
+
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                alert('Please enter a valid email');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/send-test-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, testType: 'full-newsletter' })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(`✅ Full newsletter test sent to ${email}!\n\nMessage ID: ${data.messageId}\n\nCheck your inbox in a few moments.`);
+                } else {
+                    alert(`❌ Failed: ${data.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('testEmailModal')?.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('testEmailModal')) {
+                closeTestEmailModal();
+            }
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('adminToken')) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadOverviewData();
+        }
+
+        // ===== BREVO TEST FUNCTIONS =====
+
+        // Test Brevo API Connection
+        async function testBrevoAPI() {
+            const email = document.getElementById('brevoTestEmail').value;
+            if (!email) {
+                alert('Please enter an email address');
+                return;
+            }
+
+            const resultDiv = document.getElementById('brevoTestResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div style="color: #667eea;"><strong>🔄 Testing Brevo API connection...</strong></div>';
+            resultDiv.style.backgroundColor = '#f0f4ff';
+            resultDiv.style.borderLeft = '4px solid #667eea';
+
+            try {
+                const response = await fetch('/api/admin/test-brevo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.style.backgroundColor = '#e8f5e9';
+                    resultDiv.style.borderLeft = '4px solid #2e7d32';
+                    resultDiv.innerHTML = `
+                        <div style="color: #2e7d32;">
+                            <strong>✅ SUCCESS - Brevo API is working!</strong><br><br>
+                            <strong>Configuration:</strong><br>
+                            • API Key Configured: ${data.configuration.apiKeyConfigured ? '✅ YES' : '❌ NO'}<br>
+                            • Sender Email: ${data.configuration.senderEmail}<br>
+                            • Sender Name: ${data.configuration.senderName}<br>
+                            • Test Email To: ${data.configuration.testRecipient}<br><br>
+                            <strong>Response:</strong><br>
+                            • Message ID: ${data.brevoResponse.messageId}<br>
+                            • Status: ${data.brevoResponse.statusCode === 201 ? '✅ Created' : data.brevoResponse.statusCode}<br><br>
+                            <strong>Next Steps:</strong><br>
+                            ${data.nextSteps.map(step => `• ${step}`).join('<br>')}<br><br>
+                            <strong>✨ Check your inbox for the test email (${email})!</strong>
+                        </div>
+                    `;
+
+                    // Show config in main area too
+                    document.getElementById('configApiKey').innerHTML = '✅ Configured';
+                    document.getElementById('configApiKey').style.color = '#2e7d32';
+                    document.getElementById('configSenderEmail').innerHTML = data.configuration.senderEmail;
+                    document.getElementById('configSenderEmail').style.color = '#2e7d32';
+                    document.getElementById('configSenderName').innerHTML = data.configuration.senderName;
+                    document.getElementById('configSenderName').style.color = '#2e7d32';
+                } else {
+                    resultDiv.style.backgroundColor = '#ffebee';
+                    resultDiv.style.borderLeft = '4px solid #c62828';
+                    resultDiv.innerHTML = `
+                        <div style="color: #c62828;">
+                            <strong>❌ FAILED - Brevo API Error</strong><br><br>
+                            <strong>Error:</strong> ${data.error}<br>
+                            <strong>Status: ${data.errorDetails?.status}</strong><br>
+                            <strong>Error Code:</strong> ${data.errorDetails?.errorCode || 'Unknown'}<br>
+                            <strong>Message:</strong> ${data.errorDetails?.errorMessage || data.errorDetails?.message || 'No details'}<br><br>
+                            <strong>⚠️ Possible Issues:</strong><br>
+                            ${data.possibleIssues?.map(issue => `• ${issue}`).join('<br>')}<br><br>
+                            <strong>🔧 Troubleshooting:</strong><br>
+                            • ${data.troubleshooting?.verifyApiKey}<br>
+                            • ${data.troubleshooting?.verifySender}<br>
+                            • ${data.troubleshooting?.checkQuota}<br><br>
+                            <a href="https://app.brevo.com/settings/account/senders" target="_blank" style="color: #667eea; text-decoration: underline;">
+                                👉 Open Brevo Sender Settings →
+                            </a>
+                        </div>
+                    `;
+
+                    document.getElementById('brevoConfigWarning').style.display = 'block';
+                }
+            } catch (error) {
+                resultDiv.style.backgroundColor = '#ffebee';
+                resultDiv.style.borderLeft = '4px solid #c62828';
+                resultDiv.innerHTML = `
+                    <div style="color: #c62828;">
+                        <strong>❌ Connection Error</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Test Brevo Email Sending
+        async function testBrevoEmail() {
+            const email = document.getElementById('brevoTestEmail').value;
+            if (!email) {
+                alert('Please enter an email address');
+                return;
+            }
+
+            const resultDiv = document.getElementById('brevoTestResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div style="color: #667eea;"><strong>📧 Sending welcome email test...</strong></div>';
+            resultDiv.style.backgroundColor = '#f0f4ff';
+            resultDiv.style.borderLeft = '4px solid #667eea';
+
+            try {
+                const response = await fetch('/api/admin/send-test-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, testType: 'simple' })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.style.backgroundColor = '#e8f5e9';
+                    resultDiv.style.borderLeft = '4px solid #2e7d32';
+                    resultDiv.innerHTML = `
+                        <div style="color: #2e7d32;">
+                            <strong>✅ EMAIL SENT SUCCESSFULLY!</strong><br><br>
+                            <strong>Message Details:</strong><br>
+                            • To: ${email}<br>
+                            • Message ID: ${data.messageId}<br>
+                            • Timestamp: ${new Date(data.timestamp).toLocaleString()}<br><br>
+                            <strong>✨ The email should arrive within 2 seconds!</strong><br>
+                            Check your inbox and spam folder.
+                        </div>
+                    `;
+                } else {
+                    resultDiv.style.backgroundColor = '#ffebee';
+                    resultDiv.style.borderLeft = '4px solid #c62828';
+                    resultDiv.innerHTML = `
+                        <div style="color: #c62828;">
+                            <strong>❌ FAILED TO SEND EMAIL</strong><br><br>
+                            <strong>Error:</strong> ${data.error}<br>
+                            <strong>Details:</strong> ${data.details || 'No additional details'}<br><br>
+                            <strong>⚠️ Common Issues:</strong><br>
+                            • Sender email is not verified in Brevo<br>
+                            • API key is invalid or expired<br>
+                            • Brevo quota exceeded<br><br>
+                            <a href="https://app.brevo.com/settings/account/senders" target="_blank" style="color: #667eea; text-decoration: underline;">
+                                Open Brevo Sender Settings →
+                            </a>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.style.backgroundColor = '#ffebee';
+                resultDiv.style.borderLeft = '4px solid #c62828';
+                resultDiv.innerHTML = `
+                    <div style="color: #c62828;">
+                        <strong>❌ Error</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // ===== MANUAL NEWSLETTER FUNCTIONS =====
+
+        // Toggle between send modes
+        function toggleManualSendMode() {
+            const mode = document.getElementById('manualSendMode').value;
+            document.getElementById('selectMode').style.display = mode === 'select' ? 'block' : 'none';
+            document.getElementById('customMode').style.display = mode === 'custom' ? 'block' : 'none';
+
+            if (mode === 'select') {
+                loadSubscribersForManualSend();
+            }
+        }
+
+        // Load subscribers list for manual send
+        async function loadSubscribersForManualSend() {
+            try {
+                const response = await fetch('/api/admin/subscribers-list');
+                const data = await response.json();
+
+                if (data.success && data.subscribers.length > 0) {
+                    const select = document.getElementById('subscribersList');
+                    select.innerHTML = data.subscribers.map(sub => 
+                        `<option value="${sub.email}">${sub.name} (${sub.email})</option>`
+                    ).join('');
+                }
+            } catch (error) {
+                console.error('Error loading subscribers:', error);
+            }
+        }
+
+        // Send manual newsletter
+        async function sendManualNewsletter() {
+            const mode = document.getElementById('manualSendMode').value;
+            const resultDiv = document.getElementById('manualSendResult');
+            
+            if (!mode) {
+                alert('Please select a recipient option');
+                return;
+            }
+
+            let emails = [];
+
+            if (mode === 'all') {
+                // Get all subscribers
+                try {
+                    const response = await fetch('/api/admin/subscribers-list');
+                    const data = await response.json();
+                    emails = data.subscribers.map(s => s.email);
+                } catch (error) {
+                    alert('Error loading subscribers: ' + error.message);
+                    return;
+                }
+            } else if (mode === 'select') {
+                const select = document.getElementById('subscribersList');
+                emails = Array.from(select.selectedOptions).map(opt => opt.value);
+                
+                if (emails.length === 0) {
+                    alert('Please select at least one subscriber');
+                    return;
+                }
+            } else if (mode === 'custom') {
+                const text = document.getElementById('customEmails').value.trim();
+                emails = text.split('\n')
+                    .map(e => e.trim())
+                    .filter(e => e.length > 0);
+                
+                if (emails.length === 0) {
+                    alert('Please enter at least one email address');
+                    return;
+                }
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#f0f4ff';
+            resultDiv.style.borderLeft = '4px solid #667eea';
+            resultDiv.innerHTML = `<strong>🔄 Sending newsletter to ${emails.length} recipient(s)...</strong>`;
+
+            try {
+                const response = await fetch('/api/admin/send-manual-newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ emails: emails })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.style.backgroundColor = '#e8f5e9';
+                    resultDiv.style.borderLeft = '4px solid #2e7d32';
+                    resultDiv.innerHTML = `
+                        <div style="color: #2e7d32;">
+                            <strong>✅ SUCCESS!</strong><br><br>
+                            <strong>📊 Results:</strong><br>
+                            • Total Recipients: ${data.summary.total}<br>
+                            • Successfully Sent: ${data.summary.successful} ✅<br>
+                            • Failed: ${data.summary.failed} ❌<br><br>
+                            <strong>Message:</strong> ${data.message}<br><br>
+                            ${data.results.failed.length > 0 ? `
+                                <strong>Failed Emails:</strong><br>
+                                ${data.results.failed.map(f => `• ${f.email}: ${f.error}`).join('<br>')}
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.style.backgroundColor = '#ffebee';
+                    resultDiv.style.borderLeft = '4px solid #c62828';
+                    resultDiv.innerHTML = `
+                        <div style="color: #c62828;">
+                            <strong>❌ FAILED</strong><br>
+                            ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.style.backgroundColor = '#ffebee';
+                resultDiv.style.borderLeft = '4px solid #c62828';
+                resultDiv.innerHTML = `
+                    <div style="color: #c62828;">
+                        <strong>❌ Error</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

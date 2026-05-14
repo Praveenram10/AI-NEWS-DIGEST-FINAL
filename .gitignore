@@ -1,0 +1,17 @@
+node_modules/
+.DS_Store
+*.log
+npm-debug.log*
+.env.local
+.env.*.local
+dist/
+build/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cache/
+backend/database/newsletter.db
+backend/database/newsletter.db-wal
+backend/database/newsletter.db-shm
