@@ -29,8 +29,6 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '../frontend')));
-app.use('/admin-assets', express.static(path.join(__dirname, '../admin')));
-
 // Routes
 app.use('/api/subscribers', subscriberRoutes);
 app.use('/api/admin', adminRoutes);
@@ -39,10 +37,6 @@ app.use('/api/news', newsRoutes);
 // Serve frontend pages
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin/index.html'));
 });
 
 // Health check endpoint
@@ -67,8 +61,7 @@ app.use((req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Newsletter Server running on http://localhost:${PORT}`);
-  console.log(`📨 Admin Panel: http://localhost:${PORT}/admin`);
-  console.log(`📋 Subscriber Portal: http://localhost:${PORT}`);
+  console.log(`📋 Subscriber Portal & Admin Panel: http://localhost:${PORT}`);
 });
 
 // Initialize scheduled tasks
